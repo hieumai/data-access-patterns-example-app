@@ -14,4 +14,7 @@ router.use('/v2', require('./v2'));
 // v3 use Row Data Gateway Patterns to access data from the database
 router.use('/v3', require('./v3'));
 
+// v4 use Active Record Patterns to access data from the database
+router.use('/v4', require('./v4'));
+
 module.exports = router;

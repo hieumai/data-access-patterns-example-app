@@ -1,14 +1,13 @@
 import express from 'express';
 
 const router = express.Router();
-import EmployeeGateway from '../../../data_access_layers/RowDataGateway/EmployeeGateway';
-import EmployeeFinder from '../../../data_access_layers/RowDataGateway/EmployeeFinder';
+import Employee from '../../../data_access_layers/ActiveRecord/Employee';
 
 /**
  * Get employee by id
  */
 router.get('/employees/:id', (req, res, next) => {
-  EmployeeFinder.findById(req.params.id)
+  Employee.findById(req.params.id)
     .then(employee => !employee ? res.sendStatus(404) : res.json(employee.convertToJson()))
     .catch(next);
 });
@@ -17,7 +16,7 @@ router.get('/employees/:id', (req, res, next) => {
  * Find employees by criteria
  */
 router.get('/employees', (req, res, next) => {
-  EmployeeFinder.find(req.query.firstName, req.query.lastName)
+  Employee.find(req.query.firstName, req.query.lastName)
     .then(employees => !employees ? res.sendStatus(404) : res.json(employees.map(employee => employee.convertToJson())))
     .catch(next);
 });
@@ -26,7 +25,7 @@ router.get('/employees', (req, res, next) => {
  * Update employee
  */
 router.put('/employees/:id', (req, res, next) => {
-  EmployeeFinder.findById(req.params.id)
+  Employee.findById(req.params.id)
     .then(employee => employee && employee.setFirstName(req.body.firstName).setLastName(req.body.lastName).update())
     .then(employee => !employee ? res.sendStatus(404) : res.json(employee.convertToJson()))
     .catch(next);
@@ -36,9 +35,7 @@ router.put('/employees/:id', (req, res, next) => {
  * Create employee
  */
 router.post('/employees', (req, res, next) => {
-  const employeeGateway = new EmployeeGateway(req.body);
-
-  employeeGateway.create()
+  new Employee(req.body).create()
     .then(employee => res.json(employee.convertToJson()))
     .catch(next);
 });
@@ -47,7 +44,7 @@ router.post('/employees', (req, res, next) => {
  * Delete employee by id
  */
 router.delete('/employees/:id', (req, res, next) => {
-  EmployeeFinder.findById(req.params.id)
+  Employee.findById(req.params.id)
     .then(employee => employee.delete())
     .then(() => res.sendStatus(204))
     .catch(next);
@@ -58,13 +55,8 @@ router.delete('/employees/:id', (req, res, next) => {
  * An employee is dangerous if his/her first name is "fake"
  */
 router.get('/employees/:id/isDangerous', (req, res, next) => {
-  EmployeeFinder.findById(req.params.id)
-    .then(employee => {
-      if (!employee) {
-        return res.sendStatus(404);
-      }
-      return res.json(employee.firstName === 'fake');
-    })
+  Employee.findById(req.params.id)
+    .then(employee => !employee ? res.sendStatus(404) : res.json(employee.isDangerous()))
     .catch(next);
 });
 
