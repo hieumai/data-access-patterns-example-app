@@ -1,8 +1,8 @@
 import express from 'express';
-
-const router = express.Router();
 import EmployeeGateway from '../../../data_access_layers/RowDataGateway/EmployeeGateway';
 import EmployeeFinder from '../../../data_access_layers/RowDataGateway/EmployeeFinder';
+
+const router = express.Router();
 
 /**
  * Get employee by id

@@ -1,5 +1,6 @@
 import express from 'express';
-import Employee from '../../../data_access_layers/ActiveRecord/Employee';
+import EmployeeMapper from '../../../data_access_layers/DataMapper/EmployeeMapper';
+import Employee from '../../../data_access_layers/DataMapper/Employee';
 
 const router = express.Router();
 
@@ -7,8 +8,8 @@ const router = express.Router();
  * Get employee by id
  */
 router.get('/employees/:id', (req, res, next) => {
-  Employee.findById(req.params.id)
-    .then(employee => !employee ? res.sendStatus(404) : res.json(employee.convertToJson()))
+  EmployeeMapper.findById(req.params.id)
+    .then(employee => !employee.id ? res.sendStatus(404) : res.json(employee.convertToJson()))
     .catch(next);
 });
 
@@ -16,7 +17,7 @@ router.get('/employees/:id', (req, res, next) => {
  * Find employees by criteria
  */
 router.get('/employees', (req, res, next) => {
-  Employee.find(req.query.firstName, req.query.lastName)
+  EmployeeMapper.find(req.query.firstName, req.query.lastName)
     .then(employees => !employees ? res.sendStatus(404) : res.json(employees.map(employee => employee.convertToJson())))
     .catch(next);
 });
@@ -25,9 +26,9 @@ router.get('/employees', (req, res, next) => {
  * Update employee
  */
 router.put('/employees/:id', (req, res, next) => {
-  Employee.findById(req.params.id)
-    .then(employee => employee && employee.setFirstName(req.body.firstName).setLastName(req.body.lastName).update())
-    .then(employee => !employee ? res.sendStatus(404) : res.json(employee.convertToJson()))
+  const employee = new Employee({ id: req.params.id, firstName: req.body.firstName, lastName: req.body.lastName })
+  EmployeeMapper.update(employee)
+    .then(employee => !employee.id ? res.sendStatus(404) : res.json(employee.convertToJson()))
     .catch(next);
 });
 
@@ -35,7 +36,8 @@ router.put('/employees/:id', (req, res, next) => {
  * Create employee
  */
 router.post('/employees', (req, res, next) => {
-  new Employee(req.body).create()
+  const employee = new Employee(req.body);
+  EmployeeMapper.create(employee)
     .then(employee => res.json(employee.convertToJson()))
     .catch(next);
 });
@@ -44,8 +46,8 @@ router.post('/employees', (req, res, next) => {
  * Delete employee by id
  */
 router.delete('/employees/:id', (req, res, next) => {
-  Employee.findById(req.params.id)
-    .then(employee => employee.delete())
+  const employee = new Employee({ id: req.params.id });
+  EmployeeMapper.delete(employee)
     .then(() => res.sendStatus(204))
     .catch(next);
 });
@@ -55,8 +57,8 @@ router.delete('/employees/:id', (req, res, next) => {
  * An employee is dangerous if his/her first name is "fake"
  */
 router.get('/employees/:id/isDangerous', (req, res, next) => {
-  Employee.findById(req.params.id)
-    .then(employee => !employee ? res.sendStatus(404) : res.json(employee.isDangerous()))
+  EmployeeMapper.findById(req.params.id)
+    .then(employee => !employee.id ? res.sendStatus(404) : res.json(employee.isDangerous()))
     .catch(next);
 });
 

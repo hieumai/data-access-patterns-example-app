@@ -1,7 +1,7 @@
 import express from 'express';
+import EmployeeGateway from '../../../data_access_layers/TableDataGateway/EmployeeGateway';
 
 const router = express.Router();
-import EmployeeGateway from '../../../data_access_layers/TableDataGateway/EmployeeGateway';
 
 /**
  * Get employee by id

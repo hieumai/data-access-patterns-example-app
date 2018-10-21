@@ -17,4 +17,7 @@ router.use('/v3', require('./v3'));
 // v4 use Active Record Patterns to access data from the database
 router.use('/v4', require('./v4'));
 
+// v5 use Data Mapper Patterns to access data from the database
+router.use('/v5', require('./v5'));
+
 module.exports = router;
