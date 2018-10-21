@@ -11,4 +11,7 @@ router.use('/v1', require('./v1'));
 // v2 use Table Data Gateway Patterns to access data from the database
 router.use('/v2', require('./v2'));
 
+// v3 use Row Data Gateway Patterns to access data from the database
+router.use('/v3', require('./v3'));
+
 module.exports = router;
