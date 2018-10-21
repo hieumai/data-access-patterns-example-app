@@ -5,18 +5,10 @@ router.use('/profiles', require('./profiles'));
 router.use('/articles', require('./articles'));
 router.use('/tags', require('./tags'));
 
-router.use(function(err, req, res, next){
-  if(err.name === 'ValidationError'){
-    return res.status(422).json({
-      errors: Object.keys(err.errors).reduce(function(errors, key){
-        errors[key] = err.errors[key].message;
+// v1 use code that access database directly from the handlers
+router.use('/v1', require('./v1'));
 
-        return errors;
-      }, {})
-    });
-  }
-
-  return next(err);
-});
+// v2 use Table Data Gateway Patterns to access data from the database
+router.use('/v2', require('./v2'));
 
 module.exports = router;

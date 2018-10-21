@@ -4,8 +4,8 @@ var passport = require('passport');
 var User = mongoose.model('User');
 var auth = require('../auth');
 
-router.get('/user', auth.required, function(req, res, next){
-  User.findById(req.payload.id).then(function(user){
+router.get('/users/:id', auth.required, function(req, res, next){
+  User.findById(req.params.id).then(function(user){
     if(!user){ return res.sendStatus(401); }
 
     return res.json({user: user.toAuthJSON()});
